@@ -13,7 +13,7 @@ namespace HttpClientRecorder.Tests
         public HcrHttpMessageHandlerTests()
         {
             //Clean up
-            foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.hcr"))
+            foreach (var file in Directory.GetFiles(Directory.GetCurrentDirectory(), "*.json"))
             {
                 File.Delete(file);
             }
@@ -23,7 +23,7 @@ namespace HttpClientRecorder.Tests
         [Fact]
         public async Task Should_get_result()
         {
-            var result = await _client.GetAsync("http://www.vg.no");
+            var result = await _client.GetAsync("https://github.com/gautema/CQRSlite");
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var content = await result.Content.ReadAsStringAsync();
             Assert.True(content.Length > 100);
@@ -41,17 +41,38 @@ namespace HttpClientRecorder.Tests
         [Fact]
         public async Task Should_save_response()
         {
-            await _client.GetAsync("http://www.vg.no");
-            Assert.True(File.ReadAllBytes("GEThttpwwwvgno.hcr").Length > 100);
+            await _client.GetAsync("https://github.com/gautema/CQRSlite");
+            Assert.True(File.ReadAllBytes("githubcom.json").Length > 100);
         }
 
         [Fact]
         public async Task Should_get_saved()
         {
-            File.WriteAllBytes("GEThttpwwwvgno.hcr", new byte[] {1, 1});
+            File.WriteAllText("wwwvgno.json", GetJson());
             var result = await _client.GetAsync("http://www.vg.no");
             var content = await result.Content.ReadAsStringAsync();
-            Assert.True(content.Length == 2);
+            Assert.True(content.Length == 6);
         }
+
+        private string GetJson()
+        {
+            return @"[
+                      {
+                        ""Request"": {
+                          ""Headers"": { },
+                          ""Body"": null,
+                          ""Method"": null,
+                          ""Uri"": ""https://github.com/gautema/CQRSlite""
+                        },
+                        ""Response"": {
+                          ""Headers"": { },
+                          ""Body"": ""blabla"",
+                          ""StatusCode"": 200
+                        }
+                      }
+                    ]
+                ";
+        }
+
     }
 }
