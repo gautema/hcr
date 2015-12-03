@@ -51,7 +51,7 @@ namespace HttpClientRecorder.Tests
             File.WriteAllText("wwwvgno.json", GetJson());
             var result = await _client.GetAsync("http://www.vg.no");
             var content = await result.Content.ReadAsStringAsync();
-            Assert.True(content.Length == 6);
+            Assert.Equal(6, content.Length);
         }
 
         private string GetJson()
@@ -61,8 +61,8 @@ namespace HttpClientRecorder.Tests
                         ""Request"": {
                           ""Headers"": { },
                           ""Body"": null,
-                          ""Method"": null,
-                          ""Uri"": ""https://github.com/gautema/CQRSlite""
+                          ""Method"": ""GET"",
+                          ""Uri"": ""http://www.vg.no/""
                         },
                         ""Response"": {
                           ""Headers"": { },

@@ -14,40 +14,55 @@ namespace HttpClientRecorder
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (!HasCachedRequest(request))
-            {
-                await CacheResponse(request, cancellationToken);
-            }
-            return GetRecordedResponse(request);
+            var req = GetRecordedResponse(request);
+            if (req != null)
+                return req;
+
+            return await CacheResponse(request, cancellationToken);
         }
 
-        private async Task CacheResponse(HttpRequestMessage request, CancellationToken cancellationToken)
+        private async Task<HttpResponseMessage> CacheResponse(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var response = await base.SendAsync(request, cancellationToken);
             var filename = GetFileName(request);
-            var serializableObject = await GetSerializeableObject(request, response);
-            var json = JsonConvert.SerializeObject(serializableObject, Formatting.Indented);
+            var interaction = GetSerializeableObject(request, response);
+            List<Interaction> interactions;
+            if (File.Exists(filename))
+            {
+                var file = File.ReadAllText(filename);
+                interactions = JsonConvert.DeserializeObject<List<Interaction>>(file);
+            }
+            else
+            {
+                interactions = new List<Interaction>();
+            }
+            interactions.Add(interaction);
+            var json = JsonConvert.SerializeObject(interactions, Formatting.Indented);
             File.WriteAllText(filename, json);
+            return response;
         }
 
-        private async Task<List<Interaction>> GetSerializeableObject(HttpRequestMessage request, HttpResponseMessage response)
+        private Interaction GetSerializeableObject(HttpRequestMessage request, HttpResponseMessage response)
         {
-            return new List<Interaction>
+            return new Interaction
             {
-                new Interaction
+                Request = new Request
                 {
-                    Request = new Request
-                    {
-                        Body = request.Content == null ? null : await request.Content.ReadAsStringAsync(),
-                        Uri = request.RequestUri.AbsoluteUri
-                    },
-                    Response = new Response
-                    {
-                        Body = response.Content == null ? null : await response.Content.ReadAsStringAsync(),
-                        StatusCode = response.StatusCode
-                    }
+                    Body = GetContent(request.Content),
+                    Uri = request.RequestUri.AbsoluteUri,
+                    Method = request.Method.Method
+                },
+                Response = new Response
+                {
+                    Body = GetContent(response.Content),
+                    StatusCode = response.StatusCode
                 }
             };
+        }
+
+        private string GetContent(HttpContent content)
+        {
+            return content?.ReadAsStringAsync().Result;
         }
 
         private string GetFileName(HttpRequestMessage request)
@@ -58,11 +73,27 @@ namespace HttpClientRecorder
         private HttpResponseMessage GetRecordedResponse(HttpRequestMessage request)
         {
             var filename = GetFileName(request);
+            if (!File.Exists(filename)) return null;
             var file = File.ReadAllText(filename);
             var interactions = JsonConvert.DeserializeObject<List<Interaction>>(file);
-            var msg = GetResponseFromInteraction(interactions.First());
+            var interaction = GetMatchingInteraction(interactions, request);
+            if (interaction == null) return null;
+            var msg = GetResponseFromInteraction(interaction);
 
             return msg;
+        }
+
+        private Interaction GetMatchingInteraction(List<Interaction> interactions, HttpRequestMessage request)
+        {
+            return interactions.FirstOrDefault(interaction => IsInteractionMatch(interaction, request));
+        }
+
+        private bool IsInteractionMatch(Interaction interaction, HttpRequestMessage request)
+        {
+            if (interaction.Request.Uri != request.RequestUri.AbsoluteUri) return false;
+            if (interaction.Request.Method != request.Method.Method) return false;
+            if (interaction.Request.Body != GetContent(request.Content)) return false;
+            return true;
         }
 
         private HttpResponseMessage GetResponseFromInteraction(Interaction interaction)
@@ -77,11 +108,6 @@ namespace HttpClientRecorder
                 response.Headers.Add(header.Key, header.Value);
             }
             return response;
-        }
-
-        private bool HasCachedRequest(HttpRequestMessage request)
-        {
-            return File.Exists(GetFileName(request));
         }
     }
 }
