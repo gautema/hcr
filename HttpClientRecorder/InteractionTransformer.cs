@@ -36,7 +36,5 @@ namespace HttpClientRecorder
             response.Content.Headers.ContentType = new MediaTypeHeaderValue(interaction.Response.Headers["Content-Type"]);
             return response;
         }
-
-
     }
 }
