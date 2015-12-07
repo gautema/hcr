@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>HttpClient Recorder</id>
+    <version>$version$</version>
+    <authors>Gaute Magnussen</authors>
+    <licenseUrl>https://raw.github.com/gautema/hcr/master/readme.md</licenseUrl>
+    <projectUrl>https://github.com/gautema/hcr</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Record HttpClient requests and replay them for fast, deterministic, accurate tests.</description>
+    <copyright>Copyright 2015</copyright>
+  </metadata>
+  <files>
+    <file src="bin\Release\HttpClientRecorder.dll" target="tools" />
+  </files>
+  <dependencies>
+    <dependency id="Newtonsoft.Json" version="7.0.1" />
+  </dependencies>
+</package>
