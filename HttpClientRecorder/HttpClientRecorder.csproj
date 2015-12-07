@@ -44,8 +44,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FileHandler.cs" />
     <Compile Include="HcrHttpMessageHandler.cs" />
+    <Compile Include="HcrSettings.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="InteractionMatcher.cs" />
+    <Compile Include="InteractionTransformer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SerializedEntities\Interaction.cs" />
     <Compile Include="SerializedEntities\Request.cs" />

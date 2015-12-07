@@ -8,7 +8,7 @@ namespace HttpClientRecorder.Tests
 {
     public class HcrHttpMessageHandlerTests
     {
-        private readonly HttpClient _client;
+        private HttpClient _client;
 
         public HcrHttpMessageHandlerTests()
         {
@@ -27,6 +27,17 @@ namespace HttpClientRecorder.Tests
             Assert.Equal(HttpStatusCode.OK, result.StatusCode);
             var content = await result.Content.ReadAsStringAsync();
             Assert.True(content.Length > 100);
+        }
+
+        [Fact]
+        public async Task Should_get_same_result_second_time()
+        {
+            var result = await _client.GetAsync("https://github.com/gautema/CQRSlite");
+            var result2 = await _client.GetAsync("https://github.com/gautema/CQRSlite");
+            Assert.Equal(HttpStatusCode.OK, result.StatusCode);
+            var content = await result.Content.ReadAsStringAsync();
+            var content2 = await result2.Content.ReadAsStringAsync();
+            Assert.Equal(content, content2);
         }
 
         [Fact]
@@ -54,6 +65,22 @@ namespace HttpClientRecorder.Tests
             Assert.Equal(6, content.Length);
         }
 
+        [Fact]
+        public async Task Should_get_contenttype()
+        {
+            File.WriteAllText("wwwvgno.json", GetJson());
+            var result = await _client.GetAsync("http://www.vg.no");
+            Assert.Equal("text/plain", result.Content.Headers.ContentType.MediaType);
+        }
+
+        [Fact]
+        public async Task Should_set_filelocation()
+        {
+            _client = new HttpClient(new HcrHttpMessageHandler(new HcrSettings {FileLocation = Path.GetTempPath() }));
+            await _client.GetAsync("http://www.vg.no");
+            Assert.True(File.Exists(Path.GetTempPath() + "wwwvgno.json"));
+        }
+
         private string GetJson()
         {
             return @"[
@@ -65,7 +92,7 @@ namespace HttpClientRecorder.Tests
                           ""Uri"": ""http://www.vg.no/""
                         },
                         ""Response"": {
-                          ""Headers"": { },
+                          ""Headers"": { ""Content-Type"": ""text/plain""},
                           ""Body"": ""blabla"",
                           ""StatusCode"": 200
                         }
@@ -73,6 +100,5 @@ namespace HttpClientRecorder.Tests
                     ]
                 ";
         }
-
     }
 }
