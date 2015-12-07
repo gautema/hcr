@@ -9,11 +9,11 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Record HttpClient requests and replay them for fast, deterministic, accurate tests.</description>
     <copyright>Copyright 2015</copyright>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="7.0.1" />
+    </dependencies>
   </metadata>
   <files>
     <file src="bin\Release\HttpClientRecorder.dll" target="tools" />
   </files>
-  <dependencies>
-    <dependency id="Newtonsoft.Json" version="7.0.1" />
-  </dependencies>
 </package>
