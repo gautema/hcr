@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <metadata>
-    <id>HttpClient Recorder</id>
+    <id>HttpClientRecorder</id>
     <version>$version$</version>
     <authors>Gaute Magnussen</authors>
     <licenseUrl>https://raw.github.com/gautema/hcr/master/readme.md</licenseUrl>
