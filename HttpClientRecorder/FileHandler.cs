@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using HttpClientRecorder.SerializedEntities;
 using Newtonsoft.Json;
 

@@ -5,7 +5,7 @@ using HttpClientRecorder.SerializedEntities;
 
 namespace HttpClientRecorder
 {
-    public class InteractionMatcher
+    internal class InteractionMatcher
     {
         public Interaction GetMatchingInteraction(List<Interaction> interactions, HttpRequestMessage request)
         {

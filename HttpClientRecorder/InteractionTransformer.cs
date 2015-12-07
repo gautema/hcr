@@ -4,7 +4,7 @@ using HttpClientRecorder.SerializedEntities;
 
 namespace HttpClientRecorder
 {
-    public class InteractionTransformer
+    internal class InteractionTransformer
     {
         public Interaction GetInteraction(HttpRequestMessage request, HttpResponseMessage response)
         {
