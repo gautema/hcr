@@ -6,8 +6,12 @@ Record HttpClient requests and replay them for fast, deterministic, accurate tes
 
 Inspired by [vcr](https://github.com/vcr/vcr)
 
+##Getting started
+In your test project, create your HttpClient like this: `new HttpClient(new HcrHttpMessageHandler());`
+
+
 ##License 
-Copyright 2014 Gaute Magnussen
+Copyright 2015 Gaute Magnussen
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
