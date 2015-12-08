@@ -14,7 +14,7 @@ namespace HttpClientRecorder
             _fileLocation = fileLocation;
         }
 
-        internal string GetFileName(string hostname)
+        private string GetFileName(string hostname)
         {
             return _fileLocation + hostname.StripSpecialChars() + ".json";
         }
@@ -33,7 +33,7 @@ namespace HttpClientRecorder
             var filename = GetFileName(hostname);
             if (File.Exists(filename))
             {
-                var file = File.ReadAllText(hostname);
+                var file = File.ReadAllText(filename);
                 interactions = JsonConvert.DeserializeObject<List<Interaction>>(file);
             }
             else

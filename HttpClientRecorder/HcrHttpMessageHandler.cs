@@ -23,11 +23,7 @@ namespace HttpClientRecorder
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var req = GetRecordedResponse(request);
-            if (req != null)
-                return req;
-
-            return await CacheResponse(request, cancellationToken);
+            return GetRecordedResponse(request) ?? await CacheResponse(request, cancellationToken);
         }
 
         private async Task<HttpResponseMessage> CacheResponse(HttpRequestMessage request, CancellationToken cancellationToken)

@@ -50,6 +50,14 @@ namespace HttpClientRecorder.Tests
         }
 
         [Fact]
+        public async Task Should_save_second_interaction_to_file()
+        {
+            await _client.GetAsync("https://patentimages.storage.googleapis.com/pdfs/USRE45599.pdf");
+            await _client.GetAsync("https://patentimages.storage.googleapis.com/pdfs/USRE45589.pdf");
+            Assert.True(File.ReadAllBytes("patentimagesstoragegoogleapiscom.json").Length > 100);
+        }
+
+        [Fact]
         public async Task Should_save_response()
         {
             await _client.GetAsync("https://github.com/gautema/CQRSlite");
