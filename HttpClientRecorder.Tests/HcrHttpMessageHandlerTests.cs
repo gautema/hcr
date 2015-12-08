@@ -58,6 +58,15 @@ namespace HttpClientRecorder.Tests
         }
 
         [Fact]
+        public async Task Should_get_consistent_file_size()
+        {
+            var result = await _client.GetAsync("http://pimg-fpiw.uspto.gov/fdd/34/039/091/0.pdf");
+            var content = await result.Content.ReadAsStringAsync();
+            Assert.Equal(1275298, content.Length);
+            Assert.Equal("application/pdf", result.Content.Headers.ContentType.MediaType);
+        }
+
+        [Fact]
         public async Task Should_save_response()
         {
             await _client.GetAsync("https://github.com/gautema/CQRSlite");
